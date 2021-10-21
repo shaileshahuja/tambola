@@ -1,0 +1,233 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "host",
+						"type": "address"
+					}
+				],
+				"name": "buyTicket",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "host",
+						"type": "address"
+					},
+					{
+						"internalType": "enum Tambola.PrizeType",
+						"name": "prizeType",
+						"type": "uint8"
+					}
+				],
+				"name": "claimPrize",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "endGame",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "games",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "finishedAt",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ticketCost",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "bogusPenalty",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainingNumbers",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainingNumbersCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pot",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "remainingPrizesCount",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "generateNext",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "enum Tambola.PrizeType",
+						"name": "prizeType",
+						"type": "uint8"
+					}
+				],
+				"name": "getPrizeAllocationPercent",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "host",
+						"type": "address"
+					}
+				],
+				"name": "getPrizesStatus",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "host",
+						"type": "address"
+					}
+				],
+				"name": "getTicket",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256[3]",
+								"name": "rows",
+								"type": "uint256[3]"
+							},
+							{
+								"internalType": "bool",
+								"name": "active",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct Tambola.Ticket",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "ticketCost",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "bogusPenalty",
+						"type": "bool"
+					}
+				],
+				"name": "hostGame",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Users/shailesh/Projects/tambola/contracts/Tambola.sol": "Tambola"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Users/shailesh/Projects/tambola/contracts/Tambola.sol": {
+			"keccak256": "0xc4c22a6de75ab42442916a8e77db8673439edf026fa18751f03879241a23c54f",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://e7ba3601cd13118b6e11cd274d76fc67791aa1c5628301f318c18b931bb7279c",
+				"dweb:/ipfs/QmNuzUAvtpayaLaAWRrqEba6YX22CNqm8fXMsnAcaeTznV"
+			]
+		}
+	},
+	"version": 1
+}
