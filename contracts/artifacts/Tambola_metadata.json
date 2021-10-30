@@ -6,6 +6,75 @@
 	"output": {
 		"abi": [
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_host",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_number",
+						"type": "uint256"
+					}
+				],
+				"name": "NumberGenerated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_host",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum Tambola.PrizeType",
+						"name": "_prizeType",
+						"type": "uint8"
+					}
+				],
+				"name": "PrizeClaimed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "_host",
+						"type": "address"
+					}
+				],
+				"name": "TicketBought",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "host",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "randomness",
+						"type": "uint256"
+					}
+				],
+				"name": "buyTicket",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -93,6 +162,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "randomness",
+						"type": "uint256"
+					}
+				],
+				"name": "generateNext",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "generateNext",
 				"outputs": [
@@ -148,6 +236,11 @@
 					{
 						"internalType": "address",
 						"name": "host",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "player",
 						"type": "address"
 					}
 				],
@@ -221,11 +314,11 @@
 	},
 	"sources": {
 		"Users/shailesh/Projects/tambola/contracts/Tambola.sol": {
-			"keccak256": "0xc4c22a6de75ab42442916a8e77db8673439edf026fa18751f03879241a23c54f",
+			"keccak256": "0x1b64f84ee7fb3850136d185f01bec6c8650f9cacdc83d1de3e2bfa2645d5a6c9",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://e7ba3601cd13118b6e11cd274d76fc67791aa1c5628301f318c18b931bb7279c",
-				"dweb:/ipfs/QmNuzUAvtpayaLaAWRrqEba6YX22CNqm8fXMsnAcaeTznV"
+				"bzz-raw://9009d5992c980cd0ab6ec69a8493c23d10d5acb467e18372406a36d07b38cae4",
+				"dweb:/ipfs/Qmadzv9Z179LwSJsQV71zVDgF5RQJ1SBBdpXXYjWGgDa49"
 			]
 		}
 	},

@@ -7,35 +7,43 @@ import {tambolaContractAddress} from "../contracts";
 const tambolaContractInterface = new ethers.utils.Interface(tambolaContractAbi);
 const contract = new Contract(tambolaContractAddress, tambolaContractInterface);
 
-export function useGame(host: string | null | undefined = null) {
-  const { account } = useEthers();
-  if (host == undefined) {
-    host = account
-  }
-  const [game]: any =
-    useContractCall({
-      abi: tambolaContractInterface,
-      address: tambolaContractAddress,
-      method: "games",
-      args: [host],
-    }) ?? [];
-  console.log("game" + game);
-  return game;
+export function useGame(host: string | undefined | null) {
+    const game: any =
+        useContractCall({
+            abi: tambolaContractInterface,
+            address: tambolaContractAddress,
+            method: "games",
+            args: [host],
+        }) ?? undefined;
+    return game;
 }
 
 export function useTicket(host: string) {
-  const [ticket]: any =
+    const {account} = useEthers()
+    const [ticket]: any =
     useContractCall({
-      abi: tambolaContractInterface,
-      address: tambolaContractAddress,
-      method: "getTicket",
-      args: [host],
+        abi: tambolaContractInterface,
+        address: tambolaContractAddress,
+        method: "getTicket",
+        args: [host, account],
     }) ?? [];
-  console.log("ticket" + ticket);
-  return ticket;
+    console.log('Ticket ' + ticket)
+    console.log('Account ' + account)
+    return ticket;
+}
+
+export function usePrizesStatus(host: string) {
+    const [prizesStatus]: any =
+    useContractCall({
+        abi: tambolaContractInterface,
+        address: tambolaContractAddress,
+        method: "getPrizesStatus",
+        args: [host],
+    }) ?? [];
+    return prizesStatus;
 }
 
 export function useContractMethod(methodName: string) {
-  const { state, send } = useContractFunction(contract, methodName);
-  return { state, send };
+    const {state, send} = useContractFunction(contract, methodName);
+    return {state, send};
 }

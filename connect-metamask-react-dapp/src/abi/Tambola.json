@@ -1,5 +1,74 @@
 [
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "_host",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "_number",
+					"type": "uint256"
+				}
+			],
+			"name": "NumberGenerated",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "_host",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "enum Tambola.PrizeType",
+					"name": "_prizeType",
+					"type": "uint8"
+				}
+			],
+			"name": "PrizeClaimed",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "_host",
+					"type": "address"
+				}
+			],
+			"name": "TicketBought",
+			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "host",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "randomness",
+					"type": "uint256"
+				}
+			],
+			"name": "buyTicket",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "address",
@@ -87,6 +156,25 @@
 			"type": "function"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "randomness",
+					"type": "uint256"
+				}
+			],
+			"name": "generateNext",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"name": "generateNext",
 			"outputs": [
@@ -142,6 +230,11 @@
 				{
 					"internalType": "address",
 					"name": "host",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "player",
 					"type": "address"
 				}
 			],

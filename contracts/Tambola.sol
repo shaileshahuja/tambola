@@ -54,6 +54,11 @@ contract Tambola {
         uint winPot;
     }
     
+    event NumberGenerated(address indexed _host, uint _number);
+    event TicketBought(address indexed _host);
+    event PrizeClaimed(address indexed _host, PrizeType _prizeType);
+
+    
     function getPrizeAllocationPercent(PrizeType prizeType) public pure returns (uint8) {
         if (prizeType == PrizeType.FULL_HOUSE_1) {
             return 30;
@@ -79,13 +84,17 @@ contract Tambola {
     }
 
     function generateNext() public returns (uint256) {
+        return generateNext(0);
+    }
+    
+    function generateNext(uint randomness) public returns (uint256) {
         address host = tx.origin;
         Game storage game = games[host];
         GameStatus status = getGameStatus(game);
         require(status == GameStatus.WAITING_FOR_HOST || status == GameStatus.RUNNING, "Game not yet available to generate numbers");
 
         uint256 remainingNumbers = game.remainingNumbers;
-        uint256 unSetAt = (random(remainingNumbers) % game.remainingNumbersCount);
+        uint256 unSetAt = (random(randomness ^ uint160(host)) % game.remainingNumbersCount);
         uint256 index = 0;
         for(uint i = 0; i < 90; i++) {
             if (remainingNumbers & (1 << i) > 0) {
@@ -96,6 +105,7 @@ contract Tambola {
                     if(game.remainingNumbers == 0) {
                         game.finishedAt = block.timestamp;
                     }
+                    emit NumberGenerated(host, i + 1);
                     return i + 1;
                 }
                 index++;
@@ -181,6 +191,10 @@ contract Tambola {
     }
     
     function buyTicket(address host) public payable{
+        buyTicket(host, 0);
+    }
+    
+    function buyTicket(address host, uint randomness) public payable{
         Game storage game = games[host];
         GameStatus status = getGameStatus(game);        
         require(status == GameStatus.WAITING_FOR_HOST, "Game not ready");
@@ -192,7 +206,7 @@ contract Tambola {
         game.players.push(player);
         game.pot += msg.value;
         
-        uint256 randomSeed = random(game.players.length);
+        uint256 randomSeed = random(randomness ^ game.players.length);
         uint8[5] memory top;
         uint8[5] memory middle;
         uint8[5] memory bottom;
@@ -213,6 +227,7 @@ contract Tambola {
             assert(columnCount[i] <= 3);
         }
         uint8[3] memory column;
+        uint256[3] memory rows;
         for(uint8 i = 0; i < 9; i++) {
             (column, randomSeed) = generateColumn(randomSeed, i, columnCount[i]);
             uint8[3] memory newColumn = sortColumn(column,  columnCount[i]);
@@ -220,13 +235,17 @@ contract Tambola {
             uint8 row = 0;
             while(usedIndex < columnCount[i] && row < 3) {
                 if (hasNumber[i][row] == true) {
-                    ticket.rows[row] += 1 << (newColumn[usedIndex] - 1);
+                    rows[row] += 1 << (newColumn[usedIndex] - 1);
                     usedIndex++;
                 }
                 row++;
             }
         }
+        for(uint8 i = 0; i < 3; i++) {
+            ticket.rows[i] = rows[i];
+        }
         ticket.active = true;
+        emit TicketBought(host);
     }
 
     function generateColumnNumbers(uint256 rand) internal view returns (uint8[5] memory, uint256 randomSeed) {
@@ -380,6 +399,7 @@ contract Tambola {
         } else {
             game.claimedPrizes[uint8(prizeType)] = player;
             game.remainingPrizesCount--;
+            emit PrizeClaimed(host, prizeType);
         }
 
     }
@@ -453,12 +473,11 @@ contract Tambola {
     }
     
     function random(uint seed) internal view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, seed)));
+        return uint256(keccak256(abi.encodePacked(block.number, seed)));
     }
 
-    function getTicket(address host) public view returns (Ticket memory) {
+    function getTicket(address host, address player) public view returns (Ticket memory) {
         Game storage game = games[host];
-        address player = tx.origin;
         return game.tickets[player];
     }
 }
