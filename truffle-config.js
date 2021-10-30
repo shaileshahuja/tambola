@@ -17,12 +17,14 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+// create a file at the root of your project and name it .env -- there you can set process variables
+// like the mnemomic and Infura project key below. Note: .env is ignored by git to keep your private information safe
+require('dotenv').config();
+const mnemonic = process.env["MNEMONIC"];
+const infuraProjectId = process.env["INFURA_PROJECT_ID"];
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-//
 // const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
   /**
@@ -47,6 +49,20 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+    polygon_infura_testnet: {
+      provider: () => new HDWalletProvider({
+        mnemonic: {
+          phrase: mnemonic
+        },
+        providerOrUrl:
+         "https://matic-mumbai.chainstacklabs.com/"
+      }),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      chainId: 80001
+    }
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

@@ -1,2 +1,2 @@
 export const tambolaContractAddress =
-  "0xF7A37535092e4d94CFE48F23F62a858C865A3C1B";
+  "0x5E262fE3bdE6acd6a0A0950f9f90ce5c5A448cB9";

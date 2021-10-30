@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@maticnetwork/maticjs": "^2.0.40",
+    "@truffle/hdwallet-provider": "^1.0.37",
+    "dotenv": "^9.0.0"
+  }
+}
