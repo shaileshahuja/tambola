@@ -1,4 +1,4 @@
-import {Box, ChakraProvider, Grid, GridItem, useDisclosure, Text, Flex} from "@chakra-ui/react";
+import {Box, ChakraProvider, Grid, GridItem, useDisclosure, Text, Flex, useToast} from "@chakra-ui/react";
 import theme from "./theme";
 import Layout from "./components/Layout";
 import ConnectButton from "./components/ConnectButton";
@@ -7,8 +7,9 @@ import Host from "./components/Host";
 import "@fontsource/inter";
 import {Tabs, TabList, TabPanels, Tab, TabPanel} from "@chakra-ui/react"
 import Play from "./components/Play";
-import {useEthers} from "@usedapp/core";
+import {useEthers, useNotifications} from "@usedapp/core";
 import {useEventToasts} from "./components/Game";
+import {useEffect} from "react";
 
 function App() {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -35,6 +36,7 @@ function App() {
 
 function Main() {
     const {account} = useEthers();
+    Notifications()
     if (account == undefined) {
         return <Text>Connect your wallet to play</Text>
     }
@@ -54,6 +56,34 @@ function Main() {
             </TabPanels>
         </Tabs>
     )
+}
+
+function Notifications() {
+    const { notifications } = useNotifications()
+    const toast = useToast()
+
+    function createToast(id: string, title: string, description: string) {
+        if (!toast.isActive(id)) {
+            toast({
+                id: id,
+                title: title,
+                description: description,
+                status: 'info',
+                variant: 'subtle',
+                position: 'top-right',
+                duration: 10000,
+                isClosable: true,
+            })
+        }
+    }
+
+    useEffect(() => {
+        for(let notification of notifications) {
+            console.log(notification)
+            createToast(notification.id, notification.type, notification.type)
+        }
+    }, [notifications])
+
 }
 
 export default App;
