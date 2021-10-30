@@ -1,19 +1,8 @@
-import {useEffect, useState} from "react";
-import {
-    Box,
-    Button,
-    Flex,
-    Grid,
-    GridItem, Input, InputGroup,
-    InputRightAddon,
-    NumberInput,
-    NumberInputField,
-    Spacer,
-    Text, VStack,
-} from "@chakra-ui/react";
+import {useState} from "react";
+import {Box, Button, Flex, Input, InputGroup, InputRightAddon, VStack,} from "@chakra-ui/react";
 import {useContractMethod, useGame} from "../hooks";
-import {CurrencyValue, Ether, NativeCurrency, useEthers} from "@usedapp/core";
-import {GameDetails, GameStatus, getGameStatus, useEventToasts} from "./Game";
+import {useEthers} from "@usedapp/core";
+import {GameDetails, GameStatus, getGameStatus} from "./Game";
 import {BigNumber} from "ethers";
 import {parseEther} from "ethers/lib/utils";
 
@@ -35,7 +24,7 @@ export default function Host() {
 
     return (
         <VStack spacing={5}>
-            <GameDetails game={game} host={account} />
+            <GameDetails game={game} host={account}/>
             <Flex>
                 <Button w={"750px"} colorScheme="purple" onClick={handleGenerateNext} size={"lg"}>
                     Generate Next

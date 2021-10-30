@@ -1,7 +1,7 @@
 import {BigNumber} from "ethers";
-import {Box, Flex, Table, TableCaption, Tbody, Td, Text, Tr} from "@chakra-ui/react";
+import {Box, Flex, Table, TableCaption, Tbody, Td, Tr} from "@chakra-ui/react";
 
-export default function GeneratedNumbers(props: {numbersBitmask: BigNumber}) {
+export default function GeneratedNumbers(props: { numbersBitmask: BigNumber }) {
     const numbersBitmask = props.numbersBitmask
 
     const cellStyle = {
@@ -30,8 +30,7 @@ export default function GeneratedNumbers(props: {numbersBitmask: BigNumber}) {
             for (let j = 1; j <= 10; j++) {
                 if (numbers[curNum - 1]) {
                     row.push(<Td style={cellStyle} key={curNum} bg='gray.200'> {curNum} </Td>);
-                }
-                else {
+                } else {
                     row.push(<Td style={{...cellStyle, ...opaque}} key={curNum}> {curNum} </Td>);
                 }
                 curNum += 1
@@ -39,11 +38,12 @@ export default function GeneratedNumbers(props: {numbersBitmask: BigNumber}) {
             rows.push(<Tr style={cellStyle}>{row}</Tr>)
         }
         return (
-                <Tbody>
-                    {rows}
-                </Tbody>
+            <Tbody>
+                {rows}
+            </Tbody>
         )
     }
+
     return (
         <Flex direction="column" align="center">
             <Box direction="column" align="center">

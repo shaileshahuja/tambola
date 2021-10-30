@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { DAppProvider, Config, ChainId } from "@usedapp/core";
+import {ChainId, Config, DAppProvider} from "@usedapp/core";
 
 const config: Config = {
     multicallAddresses: {
@@ -11,10 +11,10 @@ const config: Config = {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <DAppProvider config={config}>
-      <App />
-    </DAppProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+    <React.StrictMode>
+        <DAppProvider config={config}>
+            <App/>
+        </DAppProvider>
+    </React.StrictMode>,
+    document.getElementById("root")
 );

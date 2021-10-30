@@ -1,11 +1,11 @@
 import {ChangeEvent, useState} from "react";
 import {
     Box,
-    Button, Divider,
+    Button,
+    Divider,
     Flex,
-    Grid,
-    GridItem,
     HStack,
+    Icon,
     Input,
     InputGroup,
     InputRightElement,
@@ -18,12 +18,10 @@ import {
     Text,
     Tr,
     VStack,
-    Icon,
 } from "@chakra-ui/react";
 import {useContractMethod, useGame, usePrizesStatus, useTicket} from "../hooks";
 import {BigNumber} from "ethers";
 import {formatEther} from "@ethersproject/units";
-import GeneratedNumbers from "./GeneratedNumbers";
 import {GameDetails, PrizeType} from "./Game";
 import {CloseIcon} from "@chakra-ui/icons";
 
@@ -32,6 +30,7 @@ export default function Play() {
     const [input, setInput] = useState("")
     const [host, setHost] = useState("")
     const game = useGame(host)
+
     function handleHostChange() {
         setHost(input);
     }
@@ -42,11 +41,11 @@ export default function Play() {
 
     return (
         <VStack
-          divider={<StackDivider borderColor="gray.200" />}
-          spacing={4}
-          align="stretch"
+            divider={<StackDivider borderColor="gray.200"/>}
+            spacing={4}
+            align="stretch"
         >
-              <Box h="50px">
+            <Box h="50px">
                 <InputGroup size="lg">
                     <Input placeholder="Host Address"
                            value={input} onChange={handleInputChange}/>
@@ -56,7 +55,7 @@ export default function Play() {
                         </Button>
                     </InputRightElement>
                 </InputGroup>
-              </Box>
+            </Box>
             <Main game={game} host={host}/>
         </VStack>
     )
@@ -104,16 +103,16 @@ function Ticket(props: { game: any, host: string }) {
     }
 
     const numberStyle = {
-      'top': "50%",
-      'left': "50%",
-      'transform': "translate(-50%, -50%)",
+        'top': "50%",
+        'left': "50%",
+        'transform': "translate(-50%, -50%)",
         'font-size': '20px',
     }
 
     const iconStyle = {
-      'top': "50%",
-      'left': "50%",
-      'transform': "translate(-50%, -50%)",
+        'top': "50%",
+        'left': "50%",
+        'transform': "translate(-50%, -50%)",
         'opacity': 0.5
     }
 
@@ -123,11 +122,11 @@ function Ticket(props: { game: any, host: string }) {
         }
         if (clickedNumbers.includes(num)) {
             setClickedNumbers(clickedNumbers.filter((n: number) => n !== num))
-        }
-        else {
+        } else {
             setClickedNumbers([...clickedNumbers, num])
         }
     }
+
     function getReadableRow(rowMask: BigNumber) {
         let numbers = Array<number>(9);
         for (let i = 1; i <= 90; i++) {

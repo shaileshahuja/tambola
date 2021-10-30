@@ -1,18 +1,20 @@
 import {
-    Box, Button, Center, Divider, Flex, Grid, GridItem,
+    Box,
+    Center,
+    Flex,
     HStack,
-    List,
     ListIcon,
-    ListItem, SimpleGrid, Square,
+    SimpleGrid,
+    Square,
     Stat,
-    StatGroup,
-    StatHelpText,
     StatLabel,
     StatNumber,
-    Text, useToast, VStack
+    Text,
+    useToast,
+    VStack
 } from "@chakra-ui/react";
 
-import {formatEther, parseEther} from "ethers/lib/utils";
+import {formatEther} from "ethers/lib/utils";
 import {usePrizesStatus} from "../hooks";
 import {CheckCircleIcon} from "@chakra-ui/icons";
 import {BigNumber, ethers} from "ethers";
@@ -203,6 +205,7 @@ export function useEventToasts(host: any) {
             })
         }
     }
+
     useEffect(() => {
             if (host == undefined || host == "") {
                 return

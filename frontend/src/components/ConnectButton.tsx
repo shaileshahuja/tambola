@@ -1,6 +1,5 @@
-import {Button, Box, Text} from "@chakra-ui/react";
-import {useEthers, useEtherBalance} from "@usedapp/core";
-import {formatEther} from "@ethersproject/units";
+import {Box, Button, Text} from "@chakra-ui/react";
+import {useEthers} from "@usedapp/core";
 import Identicon from "./Identicon";
 
 type Props = {

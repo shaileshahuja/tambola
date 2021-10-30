@@ -1,14 +1,24 @@
-import {Box, ChakraProvider, Grid, GridItem, useDisclosure, Text, Flex, useToast} from "@chakra-ui/react";
+import {
+    Box,
+    ChakraProvider,
+    Grid,
+    GridItem,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Text,
+    useDisclosure,
+    useToast
+} from "@chakra-ui/react";
 import theme from "./theme";
-import Layout from "./components/Layout";
 import ConnectButton from "./components/ConnectButton";
 import AccountModal from "./components/AccountModal";
 import Host from "./components/Host";
 import "@fontsource/inter";
-import {Tabs, TabList, TabPanels, Tab, TabPanel} from "@chakra-ui/react"
 import Play from "./components/Play";
 import {useEthers, useNotifications} from "@usedapp/core";
-import {useEventToasts} from "./components/Game";
 import {useEffect} from "react";
 
 function App() {
@@ -59,7 +69,7 @@ function Main() {
 }
 
 function Notifications() {
-    const { notifications } = useNotifications()
+    const {notifications} = useNotifications()
     const toast = useToast()
 
     function createToast(id: string, title: string, description: string) {
@@ -78,7 +88,7 @@ function Notifications() {
     }
 
     useEffect(() => {
-        for(let notification of notifications) {
+        for (let notification of notifications) {
             console.log(notification)
             createToast(notification.id, notification.type, notification.type)
         }
