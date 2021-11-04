@@ -9,6 +9,7 @@ const config: Config = {
         [ChainId.Localhost]: '0x41b5442AC9f39C184FED5cABdca00755eB74f682',
         [ChainId.Mumbai]: '0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc'
     },
+    supportedChains: [ChainId.Mumbai, ChainId.Localhost]
 }
 
 ReactDOM.render(

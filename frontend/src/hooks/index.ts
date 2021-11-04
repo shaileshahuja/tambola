@@ -2,12 +2,12 @@ import {ethers} from "ethers";
 import {Contract} from "@ethersproject/contracts";
 import {useContractCall, useContractFunction, useEthers} from "@usedapp/core";
 import tambolaContractAbi from "../abi/Tambola.json";
-import {tambolaContractAddress} from "../contracts";
+import { useTambolaContractAddress} from "../contracts";
 
 const tambolaContractInterface = new ethers.utils.Interface(tambolaContractAbi);
-const contract = new Contract(tambolaContractAddress, tambolaContractInterface);
 
 export function useGame(host: string | undefined | null) {
+    const tambolaContractAddress = useTambolaContractAddress()
     const game: any =
         useContractCall({
             abi: tambolaContractInterface,
@@ -19,6 +19,7 @@ export function useGame(host: string | undefined | null) {
 }
 
 export function useTicket(host: string) {
+    const tambolaContractAddress = useTambolaContractAddress()
     const {account} = useEthers()
     const [ticket]: any =
     useContractCall({
@@ -33,6 +34,7 @@ export function useTicket(host: string) {
 }
 
 export function usePrizesStatus(host: string) {
+    const tambolaContractAddress = useTambolaContractAddress()
     const [prizesStatus]: any =
     useContractCall({
         abi: tambolaContractInterface,
@@ -44,6 +46,8 @@ export function usePrizesStatus(host: string) {
 }
 
 export function useContractMethod(methodName: string) {
+    const tambolaContractAddress = useTambolaContractAddress()
+    const contract = new Contract(tambolaContractAddress, tambolaContractInterface);
     const {state, send} = useContractFunction(contract, methodName);
     return {state, send};
 }

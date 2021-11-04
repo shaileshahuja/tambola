@@ -29,7 +29,7 @@ export default function GeneratedNumbers(props: { numbersBitmask: BigNumber }) {
             let row = [];
             for (let j = 1; j <= 10; j++) {
                 if (numbers[curNum - 1]) {
-                    row.push(<Td style={cellStyle} key={curNum} bg='gray.200'> {curNum} </Td>);
+                    row.push(<Td style={cellStyle} key={curNum} bg='gray.300'> {curNum} </Td>);
                 } else {
                     row.push(<Td style={{...cellStyle, ...opaque}} key={curNum}> {curNum} </Td>);
                 }
@@ -47,7 +47,7 @@ export default function GeneratedNumbers(props: { numbersBitmask: BigNumber }) {
     return (
         <Flex direction="column" align="center">
             <Box direction="column" align="center">
-                <Table variant="striped">
+                <Table variant="simple">
                     <TableCaption placement="top">Board</TableCaption>
                     {getReadableNumbers()}
                 </Table>

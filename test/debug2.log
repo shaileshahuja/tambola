@@ -1,1 +1,8 @@
+Owner: 99982563768000000000
+Host: 99899707582000000000
+Player 1: 99999768332000000000
+Player 2: 100000000000000000000
+Player 3: 100000000000000000000
+BigNumber.toString does not accept any parameters; base-10 is assumed
+Host Game- Gas units: 103801, Gas native: 0.00415204, Gas USD: 0.007888876
     > No events were emitted

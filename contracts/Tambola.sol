@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 
 pragma solidity ^0.8.4;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-contract Tambola {
+contract Tambola is Ownable {
     mapping(address => Game) public games;
     uint8 constant hostFeePercent = 3;
-    address constant owner = address(0x5c2e9BaE4FE4e7710A2F1F83c521dB632F66f242);
-    
+
     enum PrizeType {
         TOP_ROW,
         MIDDLE_ROW,
@@ -34,7 +33,6 @@ contract Tambola {
     struct Game {
         uint256 finishedAt;
         uint256 ticketCost;
-        bool bogusPenalty;
         mapping(address => Ticket) tickets;
         address[] players;
         uint256 remainingNumbers;
@@ -69,15 +67,15 @@ contract Tambola {
         return 5;
     }
 
-    function hostGame(uint256 ticketCost, bool bogusPenalty) public {
-        require(ticketCost >= 100, "Ticket cost must be at least 100");       
+    function hostGame(uint256 ticketCost) public payable{
+        require(ticketCost >= 1000000, "Ticket cost must be at least 1000000");
+        require(msg.value == ticketCost, "Funds equal to ticket cost must be sent as collateral");
         address host = tx.origin;
         Game storage game = games[host];
         GameStatus status = getGameStatus(game);
         require(status == GameStatus.INVALID || canChangeTicketCost(game), "Please end the previous game before hosting another one");
 
         game.ticketCost = ticketCost;
-        game.bogusPenalty = bogusPenalty;
         game.remainingNumbers = (1 << 90) - 1;
         game.remainingPrizesCount = 12;
         game.remainingNumbersCount = 90;
@@ -151,8 +149,8 @@ contract Tambola {
         }
         uint256 hostPot = game.pot * hostFeePercent / 100;
         remainingPot -= hostPot;
-        payable(host).transfer(hostPot);
-        payable(owner).transfer(remainingPot);
+        payable(host).transfer(hostPot + game.ticketCost);
+        payable(owner()).transfer(remainingPot);
         
         for(uint i = 0; i < game.players.length; i++) {
             address player = game.players[i];
@@ -206,92 +204,168 @@ contract Tambola {
         game.players.push(player);
         game.pot += msg.value;
         
-        uint256 randomSeed = random(randomness ^ game.players.length);
-        uint8[5] memory top;
-        uint8[5] memory middle;
-        uint8[5] memory bottom;
-        (top, randomSeed) = generateColumnNumbers(randomSeed);
-        (middle, randomSeed) = generateColumnNumbers(randomSeed);
-        (bottom, randomSeed) = generateColumnNumbers(randomSeed);
-        uint8[9] memory columnCount;
-        bool[3][9] memory hasNumber;
-        for(uint i = 0; i < 5; i++) {
-            columnCount[top[i]]++;
-            columnCount[middle[i]]++;
-            columnCount[bottom[i]]++;
-            hasNumber[top[i]][0] = true;
-            hasNumber[middle[i]][1] = true;
-            hasNumber[bottom[i]][2] = true;
-        }
-        for(uint i = 0; i < 9; i++) {
-            assert(columnCount[i] <= 3);
-        }
-        uint8[3] memory column;
-        uint256[3] memory rows;
-        for(uint8 i = 0; i < 9; i++) {
-            (column, randomSeed) = generateColumn(randomSeed, i, columnCount[i]);
-            uint8[3] memory newColumn = sortColumn(column,  columnCount[i]);
-            uint8 usedIndex = 0;
-            uint8 row = 0;
-            while(usedIndex < columnCount[i] && row < 3) {
-                if (hasNumber[i][row] == true) {
-                    rows[row] += 1 << (newColumn[usedIndex] - 1);
-                    usedIndex++;
-                }
-                row++;
-            }
-        }
-        for(uint8 i = 0; i < 3; i++) {
-            ticket.rows[i] = rows[i];
-        }
+        uint256 rand = random(randomness ^ game.players.length);
+        ticket.rows = generateTicket(rand);
         ticket.active = true;
         emit TicketBought(host);
     }
 
-    function generateColumnNumbers(uint256 rand) internal view returns (uint8[5] memory, uint256 randomSeed) {
-        uint8[9] memory options = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-        uint8[5] memory row;
-        for(uint i = 0; i < 5; i++) {
-            rand = random(rand);
-            uint256 index = rand % (options.length - i);
-            row[i] = options[index];
-            options[index] = options[options.length - 1 - i];
+
+    function generateTicket(uint256 rand) internal view returns (uint[3] memory) {
+        uint8[9] memory columnCounts;
+        bool[3][9] memory ticketStructure;
+        (columnCounts, rand) = generateColumnCounts(rand);
+        (ticketStructure, rand) = generateTicketStructure(columnCounts, rand);
+        uint[3] memory rows;
+        uint8[3] memory column;
+        for(uint8 i = 0; i < 9; i++) {
+            (column, rand) = generateColumn(rand, i, columnCounts[i]);
+            column = sortColumn(column,  columnCounts[i]);
+            uint8 usedCount = 0;
+            uint8 row = 0;
+            while(usedCount < columnCounts[i] && row < 3) {
+                if (ticketStructure[i][row] == true) {
+                    rows[row] += 1 << (column[usedCount] - 1);
+                    usedCount++;
+                }
+                row++;
+            }
         }
-        return (row, rand);
+        return rows;
     }
 
-    function generateColumn(uint256 rand, uint8 columnNumber, uint8 limit) internal view returns (uint8[3] memory, uint256 randomSeed) {
-        uint8[3] memory column;
-        if (columnNumber == 0) {
-            uint8[9] memory options = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            for(uint i = 0; i < limit; i++) {
-                rand = random(rand);
-                uint256 index = rand % (options.length - i);
-                column[i] = columnNumber * 10 + options[index];
-                options[index] = options[options.length - 1 - i];
+    function generateTicketStructure(uint8[9] memory columnCounts, uint256 rand) internal view returns (bool[3][9] memory, uint) {
+        bool[3][9] memory ticketStructure;
+        uint8 triples = 0;
+        for(uint8 i=0; i <=8; i++) {
+            if(columnCounts[i] == 3) {
+                triples += 1;
+                for(uint8 j=0; j<=2; j++) {
+                    ticketStructure[i][j] = true;
+                }
             }
         }
-        else if (columnNumber == 8) {
-            uint8[11] memory options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            for(uint i = 0; i < limit; i++) {
-                rand = random(rand);
-                uint256 index = rand % (options.length - i);
-                column[i] = columnNumber * 10 + options[index];
-                options[index] = options[options.length - 1 - i];
+        assert(triples <= 3);
+        uint8[] memory doubleOptions = new uint8[](12);
+        uint length;
+        if(triples == 0 || triples == 2) {
+            for(uint8 i=0; i <=2; i++) {
+                doubleOptions[i] = i;
+                doubleOptions[i + 3] = i;
             }
+            length = 6;
+        }
+        else if(triples == 1) {
+            for(uint8 i=0; i <=2; i++) {
+                doubleOptions[i] = i;
+                doubleOptions[i + 3] = i;
+                doubleOptions[i + 6] = i;
+                doubleOptions[i + 9] = i;
+            }
+            length = 12;
         }
         else {
-            uint8[10] memory options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-            for(uint i = 0; i < limit; i++) {
-                rand = random(rand);
-                uint256 index = rand % (options.length - i);
-                column[i] = columnNumber * 10 + options[index];
-                options[index] = options[options.length - 1 - i];
+            length = 0;
+        }
+        uint8[3] memory numbersLeft = [5 - triples, 5 - triples, 5 - triples];
+        uint typeSelected;
+        for(uint8 i=0; i <=8; i++) {
+            if(columnCounts[i] == 2) {
+                (typeSelected, rand) = chooseRandom(doubleOptions, length, rand);
+                length -= 1;
+                if (typeSelected == 0) {
+                    ticketStructure[i][0] = true;
+                    ticketStructure[i][1] = true;
+                    numbersLeft[0] -= 1;
+                    numbersLeft[1] -= 1;
+                }
+                else if (typeSelected == 1) {
+                    ticketStructure[i][0] = true;
+                    ticketStructure[i][2] = true;
+                    numbersLeft[0] -= 1;
+                    numbersLeft[2] -= 1;
+                }
+                else {
+                    ticketStructure[i][1] = true;
+                    ticketStructure[i][2] = true;
+                    numbersLeft[1] -= 1;
+                    numbersLeft[2] -= 1;
+                }
             }
+        }
+        for(uint8 i=0; i <=8; i++) {
+            if(columnCounts[i] == 1) {
+                uint index = rand % (numbersLeft[0] + numbersLeft[1] + numbersLeft[2]);
+                rand = random(rand);
+                if (index < numbersLeft[0]) {
+                    ticketStructure[i][0] = true;
+                    numbersLeft[0] -= 1;
+                }
+                else if (index < (numbersLeft[0] + numbersLeft[1])) {
+                    ticketStructure[i][1] = true;
+                    numbersLeft[1] -= 1;
+                }
+                else {
+                    ticketStructure[i][2] = true;
+                    numbersLeft[2] -= 1;
+                }
+            }
+        }
+        assert(numbersLeft[0] == 0);
+        assert(numbersLeft[1] == 0);
+        assert(numbersLeft[2] == 0);
+        return (ticketStructure, rand);
+    }
+
+    function generateColumnCounts(uint256 rand) internal view returns (uint8[9] memory, uint256 randomSeed) {
+        uint8[] memory options = new uint8[](18);
+        uint8[9] memory counts;
+        for(uint8 i = 0; i < 9; i++) {
+            options[i] = i;
+            options[i + 9] = i;
+            counts[i] = 1;
+        }
+        uint8 index;
+        for(uint i = 0; i < 6; i++) {
+            (index, rand) = chooseRandom(options, options.length - i, rand);
+            counts[index] += 1;
+        }
+        return (counts, rand);
+    }
+    
+    function generateColumn(uint256 rand, uint8 columnNumber, uint8 limit) internal view returns (uint8[3] memory, uint256 randomSeed) {
+        uint8[3] memory column;
+        uint8[] memory options = new uint8[](11);
+        uint8 start = 0;
+        uint8 end = 9;
+        if (columnNumber == 0) {
+            start = 1;
+        }
+        if (columnNumber == 8) {
+            end = 10;
+        }
+        uint length = 0;
+        for(uint8 i = start; i <= end; i++) {
+            options[length] = i;
+            length++;
+        }
+        uint8 option;
+        for(uint i = 0; i < limit; i++) {
+            (option, rand) = chooseRandom(options, length, rand);
+            column[i] = columnNumber * 10 + option;
+            length--;
         }
         return (column, rand);
     }
-    
+
+    function chooseRandom(uint8[] memory numbers, uint length, uint rand) internal view returns (uint8, uint) {
+        uint256 index = rand % length;
+        uint8 num = numbers[index];
+        numbers[index] = numbers[length - 1];
+        rand = random(rand);
+        return (num, rand);
+    }
+
     function sortColumn(uint8[3] memory column, uint limit) internal pure returns (uint8[3] memory){
         if (limit == 3) {
             uint8[3] memory newColumn;
@@ -349,7 +423,7 @@ contract Tambola {
         return column;
     }
     
-    function getPrizesStatus(address host) public view returns (address[] memory){
+    function getPrizesStatus(address host) public view returns (address[] memory) {
         Game storage game = games[host];
         address[] memory winners = new address[](12);
         for(uint8 i = 0; i <= uint8(PrizeType.DINNER); i++) {
@@ -390,12 +464,7 @@ contract Tambola {
             won = mask & remainingNumbers == 0;
         }
         if (won == false) {
-            if (game.bogusPenalty == true) {
-                ticket.active = false;
-            }
-            else {
-                revert("Bogie!");
-            }
+            revert("Bogie!");
         } else {
             game.claimedPrizes[uint8(prizeType)] = player;
             game.remainingPrizesCount--;

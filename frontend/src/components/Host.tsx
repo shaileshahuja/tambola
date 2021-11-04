@@ -1,30 +1,30 @@
-import {useState} from "react";
-import {Box, Button, Flex, Input, InputGroup, InputRightAddon, VStack,} from "@chakra-ui/react";
-import {useContractMethod, useGame} from "../hooks";
-import {useEthers} from "@usedapp/core";
-import {GameDetails, GameStatus, getGameStatus} from "./Game";
-import {BigNumber} from "ethers";
-import {parseEther} from "ethers/lib/utils";
+import { useState } from "react";
+import { Box, Button, Flex, Input, InputGroup, InputRightAddon, VStack, } from "@chakra-ui/react";
+import { useContractMethod, useGame } from "../hooks";
+import { useEthers } from "@usedapp/core";
+import { GameDetails, GameStatus, getGameStatus } from "./Game";
+import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 
 export default function Host() {
-    const {account} = useEthers();
+    const { account } = useEthers();
     const game = useGame(account);
     const gameStatus = getGameStatus(game)
-    const {state: generateNextState, send: generateNext} = useContractMethod("generateNext()")
+    const { state: generateNextState, send: generateNext } = useContractMethod("generateNext()")
     if (gameStatus === GameStatus.INVALID) {
-        return <HostGame/>
+        return <HostGame />
     }
     if (gameStatus === GameStatus.FINISHED) {
-        return <EndGame/>
+        return <EndGame />
     }
 
     function handleGenerateNext() {
-        generateNext({'gasLimit': 100000});
+        generateNext({ 'gasLimit': 100000 });
     }
 
     return (
         <VStack spacing={5}>
-            <GameDetails game={game} host={account}/>
+            <GameDetails game={game} host={account} />
             <Flex>
                 <Button w={"750px"} colorScheme="purple" onClick={handleGenerateNext} size={"lg"}>
                     Generate Next
@@ -35,7 +35,7 @@ export default function Host() {
 }
 
 function HostGame() {
-    const {state, send: hostGame} = useContractMethod("hostGame");
+    const { state, send: hostGame } = useContractMethod("hostGame");
     const [ticketCost, setTicketCost] = useState(BigNumber.from(0));
     const [invalid, setInvalid] = useState(false);
 
@@ -52,7 +52,7 @@ function HostGame() {
 
     function handleHostGame() {
         if (!invalid) {
-            hostGame(ticketCost, false)
+            hostGame(ticketCost, { 'value': ticketCost, 'gasLimit': 500000 })
         }
     }
 
@@ -67,7 +67,7 @@ function HostGame() {
                         isInvalid={invalid}
                     >
                     </Input>
-                    <InputRightAddon children="ETH"/>
+                    <InputRightAddon children="ETH" />
                 </InputGroup>
                 <Button colorScheme="teal" size="lg" onClick={handleHostGame} w={"100%"}>
                     Host Game
@@ -78,7 +78,7 @@ function HostGame() {
 }
 
 function EndGame() {
-    const {state, send: endGame} = useContractMethod("endGame");
+    const { state, send: endGame } = useContractMethod("endGame");
 
     function handleHostGame() {
         endGame();

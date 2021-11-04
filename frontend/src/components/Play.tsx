@@ -183,7 +183,7 @@ function BuyTicket(props: { game: any, host: string }) {
     const ticketCost = game.ticketCost
 
     function handleBuyTicket() {
-        buyTicket(host, {'value': ticketCost, 'gasLimit': 400000});
+        buyTicket(host, {'value': ticketCost, 'gasLimit': 500000});
     }
 
     return (

@@ -18,7 +18,7 @@ import {formatEther} from "ethers/lib/utils";
 import {usePrizesStatus} from "../hooks";
 import {CheckCircleIcon} from "@chakra-ui/icons";
 import {BigNumber, ethers} from "ethers";
-import {tambolaContractAddress} from "../contracts";
+import { useTambolaContractAddress} from "../contracts";
 import {useEthers} from "@usedapp/core";
 import {useEffect, useState} from "react";
 import tambolaContractAbi from "../abi/Tambola.json";
@@ -151,6 +151,7 @@ function NewNumberBox(props: { host: string }) {
     const host = props.host
     const {library} = useEthers()
     const [newNumber, setNewNumber] = useState<number | undefined>(undefined)
+    const tambolaContractAddress = useTambolaContractAddress();
 
     const contract = new ethers.Contract(tambolaContractAddress, tambolaContractInterface, library)
     useEffect(() => {
@@ -188,7 +189,8 @@ function NewNumberBox(props: { host: string }) {
 
 export function useEventToasts(host: any) {
     const toast = useToast()
-    const {library} = useEthers()
+    const { library } = useEthers()
+    const tambolaContractAddress = useTambolaContractAddress()
     const contract = new ethers.Contract(tambolaContractAddress, tambolaContractInterface, library)
 
     function createToast(id: string, title: string, description: string) {

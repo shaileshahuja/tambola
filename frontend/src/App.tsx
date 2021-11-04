@@ -20,9 +20,14 @@ import "@fontsource/inter";
 import Play from "./components/Play";
 import {useEthers, useNotifications} from "@usedapp/core";
 import {useEffect} from "react";
+import FAQ from "./components/FAQ";
 
 function App() {
     const {isOpen, onOpen, onClose} = useDisclosure();
+    useEffect(() => {
+        document.title = "Tambola: Play to Earn"
+    }, []);
+
     return (
         <ChakraProvider theme={theme}>
             <Box>
@@ -55,6 +60,7 @@ function Main() {
             <TabList>
                 <Tab>Host</Tab>
                 <Tab>Play</Tab>
+                <Tab>FAQ</Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>
@@ -62,6 +68,9 @@ function Main() {
                 </TabPanel>
                 <TabPanel>
                     <Play/>
+                </TabPanel>
+                <TabPanel>
+                    <FAQ/>
                 </TabPanel>
             </TabPanels>
         </Tabs>
