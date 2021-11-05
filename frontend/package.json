@@ -1,7 +1,7 @@
 {
-  "name": "connect-metamask-react-dapp",
+  "name": "tambola-dapp",
   "version": "0.1.0",
-  "author": "Jacob E. Dawson",
+  "author": "Shailesh Ahuja",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^1.0.14",
