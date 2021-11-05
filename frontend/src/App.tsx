@@ -18,12 +18,12 @@ import AccountModal from "./components/AccountModal";
 import Host from "./components/Host";
 import "@fontsource/inter";
 import Play from "./components/Play";
-import {useEthers, useNotifications} from "@usedapp/core";
-import {useEffect} from "react";
+import { useEthers, useNotifications } from "@usedapp/core";
+import { useEffect } from "react";
 import FAQ from "./components/FAQ";
 
 function App() {
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     useEffect(() => {
         document.title = "Tambola: Play to Earn"
     }, []);
@@ -37,11 +37,11 @@ function App() {
                     gap={4}
                 >
                     <GridItem rowSpan={1} colSpan={5} bg="grey">
-                        <ConnectButton handleOpenModal={onOpen}/>
-                        <AccountModal isOpen={isOpen} onClose={onClose}/>
+                        <ConnectButton handleOpenModal={onOpen} />
+                        <AccountModal isOpen={isOpen} onClose={onClose} />
                     </GridItem>
                     <GridItem rowSpan={19} colSpan={5}>
-                        <Main/>
+                        <Main />
                     </GridItem>
                 </Grid>
             </Box>
@@ -50,7 +50,7 @@ function App() {
 }
 
 function Main() {
-    const {account} = useEthers();
+    const { account } = useEthers();
     Notifications()
     if (account == undefined) {
         return <Text>Connect your wallet to play</Text>
@@ -64,13 +64,13 @@ function Main() {
             </TabList>
             <TabPanels>
                 <TabPanel>
-                    <Host/>
+                    <Host />
                 </TabPanel>
                 <TabPanel>
-                    <Play/>
+                    <Play />
                 </TabPanel>
                 <TabPanel>
-                    <FAQ/>
+                    <FAQ />
                 </TabPanel>
             </TabPanels>
         </Tabs>
@@ -78,7 +78,7 @@ function Main() {
 }
 
 function Notifications() {
-    const {notifications} = useNotifications()
+    const { notifications } = useNotifications()
     const toast = useToast()
 
     function createToast(id: string, title: string, description: string) {
@@ -98,8 +98,10 @@ function Notifications() {
 
     useEffect(() => {
         for (let notification of notifications) {
-            console.log(notification)
-            createToast(notification.id, notification.type, notification.type)
+            if (notification.type == 'walletConnected') {
+                createToast(notification.id, "Wallet Connected!", "")
+
+            }
         }
     }, [notifications])
 

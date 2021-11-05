@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import {ChainId, Config, DAppProvider} from "@usedapp/core";
+import { ChainId, Config, DAppProvider } from "@usedapp/core";
 
 const config: Config = {
     multicallAddresses: {

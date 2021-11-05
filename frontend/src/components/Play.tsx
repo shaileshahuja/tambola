@@ -227,9 +227,6 @@ function ClaimPrize(props: { game: any, host: string }) {
     }
     return (
         <HStack spacing="24px" m={5}>
-            <Text>
-                {claimPrizeState.errorMessage}
-            </Text>
             <Select placeholder="Select prize" onChange={handlePrizeChange}>
                 {options}
             </Select>
