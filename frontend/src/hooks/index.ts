@@ -70,7 +70,6 @@ export function useContractMethod(methodName: string) {
     const { state, send } = useContractFunction(contract, methodName);
 
     useEffect(() => {
-        console.log(state)
         if (state.errorMessage != undefined) {
             createToast("Error", "Transaction Error", state.errorMessage, 'error')
         }
