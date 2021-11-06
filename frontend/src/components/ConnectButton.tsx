@@ -2,7 +2,7 @@ import {
     Box, Button, Text,
     useToast
 } from "@chakra-ui/react";
-import { useConfig, useEthers } from "@usedapp/core";
+import { useConfig, useEthers, CHAIN_NAMES } from "@usedapp/core";
 import Identicon from "./Identicon";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 
 export default function ConnectButton({ handleOpenModal }: Props) {
     const { supportedChains } = useConfig()
-    const { activateBrowserWallet, account } = useEthers();
+    const { activateBrowserWallet, account, chainId } = useEthers();
     const toast = useToast()
 
     function createToast(id: string, title: string, description: string) {
@@ -53,6 +53,9 @@ export default function ConnectButton({ handleOpenModal }: Props) {
                 m="1px"
                 px={3}
             >
+                <Text color="white" fontSize="md" fontWeight="medium" mr="2">
+                    {chainId && CHAIN_NAMES[chainId]} -
+                </Text>
                 <Text color="white" fontSize="md" fontWeight="medium" mr="2">
                     {account &&
                         `${account.slice(0, 6)}...${account.slice(
