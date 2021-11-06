@@ -2,7 +2,7 @@ import {
     Box, Button, Text,
     useToast
 } from "@chakra-ui/react";
-import { useEthers } from "@usedapp/core";
+import { useConfig, useEthers } from "@usedapp/core";
 import Identicon from "./Identicon";
 
 type Props = {
@@ -10,8 +10,8 @@ type Props = {
 };
 
 export default function ConnectButton({ handleOpenModal }: Props) {
+    const { supportedChains } = useConfig()
     const { activateBrowserWallet, account } = useEthers();
-
     const toast = useToast()
 
     function createToast(id: string, title: string, description: string) {
@@ -30,18 +30,12 @@ export default function ConnectButton({ handleOpenModal }: Props) {
     }
 
     function onActivationError(error: Error) {
-        if (error.name == "UnsupportedChainIdError") {
-            createToast('WalletConnectionError', "Network not supported", "Please switch to Polygon MATIC network")
-        }
-        else {
-            createToast('WalletConnectionError', error.name, error.message)
-        }
-
+        console.log(error.message)
+        createToast('WalletConnectionError', 'Wallet connection error', 'Please make sure you are on Polygon network and your wallet is connected')
     }
     function handleConnectWallet() {
         activateBrowserWallet(onActivationError);
     }
-
     let button;
     if (account) {
         button = (
@@ -58,7 +52,6 @@ export default function ConnectButton({ handleOpenModal }: Props) {
                 borderRadius="xl"
                 m="1px"
                 px={3}
-                height="38px"
             >
                 <Text color="white" fontSize="md" fontWeight="medium" mr="2">
                     {account &&
@@ -108,9 +101,6 @@ export default function ConnectButton({ handleOpenModal }: Props) {
         <Box
             display="flex"
             alignItems="center"
-            background="gray.700"
-            borderRadius="xl"
-            py="0"
             float={'right'}
         >
             {button}
