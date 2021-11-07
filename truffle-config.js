@@ -23,6 +23,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 require('dotenv').config();
 const mnemonic = process.env["MNEMONIC"];
 const infuraProjectId = process.env["INFURA_PROJECT_ID"];
+const privateKey = process.env["PK"];
 
 // const fs = require('fs');
 
@@ -68,6 +69,18 @@ module.exports = {
       timeoutBlocks: 200,
       skipDryRun: true,
       chainId: 80001
+    },
+    polygon_mainnet: {
+      provider: () => new HDWalletProvider({
+        privateKeys: [privateKey],
+        providerOrUrl:
+          "https://polygon-rpc.com/"
+      }),
+      network_id: 137,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      chainId: 137
     }
     // Another network with more advanced options...
     // advanced: {
