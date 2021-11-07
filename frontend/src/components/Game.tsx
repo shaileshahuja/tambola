@@ -14,13 +14,13 @@ import {
     VStack
 } from "@chakra-ui/react";
 
-import {formatEther} from "ethers/lib/utils";
-import {usePrizesStatus} from "../hooks";
-import {CheckCircleIcon} from "@chakra-ui/icons";
-import {BigNumber, ethers} from "ethers";
-import { useTambolaContractAddress} from "../contracts";
-import {useEthers} from "@usedapp/core";
-import {useEffect, useState} from "react";
+import { formatEther } from "ethers/lib/utils";
+import { usePrizesStatus } from "../hooks";
+import { CheckCircleIcon } from "@chakra-ui/icons";
+import { BigNumber, ethers } from "ethers";
+import { useTambolaContractAddress } from "../contracts";
+import { useEthers } from "@usedapp/core";
+import { useEffect, useState } from "react";
 import tambolaContractAbi from "../abi/Tambola.json";
 import GeneratedNumbers from "./GeneratedNumbers";
 
@@ -80,7 +80,7 @@ function GameStats(props: { game: any, host: any }) {
                 <StatNumber>{game.pot / game.ticketCost}</StatNumber>
             </Stat>
             <Stat pl={10}>
-                <StatLabel>Total Pot (ETH)</StatLabel>
+                <StatLabel>Total Pot (MATIC)</StatLabel>
                 <StatNumber>{formatEther(game.pot)}</StatNumber>
             </Stat>
             <Stat pl={10}>
@@ -88,7 +88,7 @@ function GameStats(props: { game: any, host: any }) {
                 <StatNumber>{game.remainingPrizesCount}</StatNumber>
             </Stat>
             <Flex pl={10}>
-                <NewNumberBox host={host}/>
+                <NewNumberBox host={host} />
             </Flex>
         </HStack>
     )
@@ -109,7 +109,7 @@ function PrizeStats(props: { host: string }) {
             winnerList.push(
                 (
                     <Flex>
-                        <ListIcon/>
+                        <ListIcon />
                         <Text>
                             {PrizeType[i]}
                         </Text>
@@ -120,7 +120,7 @@ function PrizeStats(props: { host: string }) {
             winnerList.push(
                 (
                     <Box md={4}>
-                        <ListIcon as={CheckCircleIcon} color="green.500"/>
+                        <ListIcon as={CheckCircleIcon} color="green.500" />
                         <Text>
                             {PrizeType[i]}
                         </Text>
@@ -137,31 +137,36 @@ function PrizeStats(props: { host: string }) {
 }
 
 export function GameDetails(props: { game: any, host: any }) {
-    const {game, host} = props;
+    const { game, host } = props;
     useEventToasts(host)
     return (
         <VStack>
-            <GameStats game={game} host={host}/>
-            <GeneratedNumbers numbersBitmask={game.remainingNumbers}/>
+            <GameStats game={game} host={host} />
+            <GeneratedNumbers numbersBitmask={game.remainingNumbers} />
         </VStack>
     )
 }
 
 function NewNumberBox(props: { host: string }) {
     const host = props.host
-    const {library} = useEthers()
+    const { library } = useEthers()
     const [newNumber, setNewNumber] = useState<number | undefined>(undefined)
     const tambolaContractAddress = useTambolaContractAddress();
 
     const contract = new ethers.Contract(tambolaContractAddress, tambolaContractInterface, library)
     useEffect(() => {
-            if (host == undefined || host == "") {
-                return
-            }
-            contract.on(contract.filters.NumberGenerated(host), (host: string, num: BigNumber) => {
-                setNewNumber(num.toNumber())
-            })
-        },
+        if (host == undefined || host == "") {
+            return
+        }
+        let event = contract.filters.NumberGenerated(host)
+        function listener(host: string, num: BigNumber) {
+            setNewNumber(num.toNumber())
+        }
+        contract.on(event, listener)
+        return function unsubscribe() {
+            contract.off(event, listener)
+        }
+    },
         [host]
     )
     if (host == undefined || host == "") {
@@ -209,19 +214,30 @@ export function useEventToasts(host: any) {
     }
 
     useEffect(() => {
-            if (host == undefined || host == "") {
-                return
-            }
-            contract.on(contract.filters.NumberGenerated(host), (host: string, num: BigNumber) => {
-                createToast(num.toString(), 'Number Generated', num.toString())
-            })
-            contract.on(contract.filters.TicketBought(host), (host: string) => {
-                createToast(host.toString(), 'Ticket Bought', '')
-            })
-            contract.on(contract.filters.PrizeClaimed(host), (host: string, prizeType: number) => {
-                createToast(PrizeType[prizeType], 'Prize Claimed', PrizeType[prizeType])
-            })
-        },
+        if (host == undefined || host == "") {
+            return
+        }
+        let event1 = contract.filters.NumberGenerated(host)
+        let event2 = contract.filters.TicketBought(host)
+        let event3 = contract.filters.PrizeClaimed(host)
+        function listener1(host: string, num: BigNumber) {
+            createToast(num.toString(), 'Number Generated', num.toString())
+        }
+        function listener2(host: string) {
+            createToast(host.toString(), 'Ticket Bought', '')
+        }
+        function listener3(host: string, prizeType: number) {
+            createToast(PrizeType[prizeType], 'Prize Claimed', PrizeType[prizeType])
+        }
+        contract.on(event1, listener1)
+        contract.on(event2, listener2)
+        contract.on(event3, listener3)
+        return function unsubscribe() {
+            contract.off(event1, listener1)
+            contract.off(event2, listener2)
+            contract.off(event3, listener3)
+        }
+    },
         [host]
     )
 }

@@ -189,7 +189,7 @@ function BuyTicket(props: { game: any, host: string }) {
     return (
         <Flex>
             <Button colorScheme="teal" size="lg" onClick={handleBuyTicket}>
-                Buy Ticket for {ticketCost && formatEther(ticketCost)}
+                Buy Ticket for {ticketCost && formatEther(ticketCost)} MATIC
             </Button>
         </Flex>
     );

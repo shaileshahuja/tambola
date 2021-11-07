@@ -67,7 +67,7 @@ function HostGame() {
                         isInvalid={invalid}
                     >
                     </Input>
-                    <InputRightAddon children="ETH" />
+                    <InputRightAddon children="MATIC" />
                 </InputGroup>
                 <Button colorScheme="teal" size="lg" onClick={handleHostGame} w={"100%"}>
                     Host Game
