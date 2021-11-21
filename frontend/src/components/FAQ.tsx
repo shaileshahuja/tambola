@@ -68,7 +68,7 @@ function Question(props: { question: string, answer: string }) {
 const generalFAQs = [
     {
         'question': "What is tambola?",
-        'answer': "Tambola is a variation of Bingo. Watch this video to learn the basics: https://www.youtube.com/watch?v=daxRy9-bht0"
+        'answer': "Tambola is a variation of Bingo. Watch this video to learn the basics: https://www.youtube.com/watch?v=IbdOnLB4kaE&ab_channel=tambola"
     },
     {
         'question': "Which networks are supported?",
