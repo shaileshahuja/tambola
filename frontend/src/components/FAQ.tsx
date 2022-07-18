@@ -35,7 +35,7 @@ export default function FAQ() {
                         <Text textAlign="left" fontSize="lg" pr="1">
                             {title}
                         </Text>
-                        <AccordionIcon w={6} h={6}/>
+                        <AccordionIcon w={6} h={6} />
                     </AccordionButton>
                     <AccordionPanel pb={0}>
                         {questions}
@@ -73,6 +73,14 @@ const generalFAQs = [
     {
         'question': "Which networks are supported?",
         'answer': "You can play on Polygon network. Both MATIC mainnet and mumbai testnet is supported."
+    },
+    {
+        'question': "Where can I find the contract?",
+        'answer': "Polygon Mainnet contract: 0xAcC4586c8DeBB07237F850896084cd1c65731814, Mumbai Testnet contract: 0x0a0A65F51c9b752330c6b2550fb6a12d39890eF5"
+    },
+    {
+        'question': "Where can I find the source code?",
+        'answer': "https://github.com/shaileshahuja/tambola"
     },
 ]
 
